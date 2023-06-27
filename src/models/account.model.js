@@ -1,23 +1,41 @@
 const async = require('hbs/lib/async.js');
 const connection = require('../DB/connect.js')
 const Account = function(account) {
-    this.ID = account.ID;
-    this.Phone = account.Phone;
-    this.Password = account.Password;
-    this.Email = account.Email;
-    this.FullName = account.FullName;
+    this.id = account.id;
+    this.phone = account.phone;
+    this.password = account.password;
+    this.email = account.email;
+    this.ho = account.ho;
+    this.ten = account.ten;
+    this.chu_danh = account.chu_danh;
+    this.dia_chi = account.dia_chi;
+    this.username = account.username;
+    this.role = account.role;
+    this.cap_tren = account.cap_tren;
+    this.ngay_tao = account.ngay_tao;
 
-    this.Role = account.Role;
-    this.Status = account.Status
+
+//     this.Password = account.Password;
+//     this.Email = account.Email;
+//     this.Ho = account.Ho;
+//     this.Ten = account.Ten;
+//     this.ChucDanh = account.ChucDanh;
+//     this.Diachi = account.Diachi;
+
+//     this.Username = account.Username;
+//     this.Role = account.Role;
+//    this.CapTren = account.CapTren;
 }
 
-Account.getByPhoneAndPassword = async function(data, result) {
-
-    await connection.query('SELECT * FROM account WHERE Phone = ? AND Password = ?', [data.phone, data.password], function(err, account) {
+Account.getByUsernameAndPassword = async function(data, result) {
+   
+    await connection.query('SELECT * FROM account WHERE username = $1 AND password = $2', [data.username, data.password], function(err, account) {
         if (err || account.length == 0 || account == null) {
-            result(false, null);
+            
+            result(false, err);
         } else {
-            result(true, account[0]);
+            
+            result(true, account);
 
             // const role = account[0].role;
             // if (role == -1) {

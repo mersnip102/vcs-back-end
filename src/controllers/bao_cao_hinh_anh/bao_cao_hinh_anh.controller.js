@@ -1,9 +1,11 @@
 const express = require('express')
 const app = express()
+const wkx = require('wkx');
+
 
 app.use(express.static('assets'))
 var jwt = require('../../jwt/tokenUtils')
-
+var { prepareResponse } = require('../../common/response.js')
 const {
     v1: uuidv1,
     v4: uuidv4,
@@ -19,7 +21,15 @@ const getAllBaoCaoHinhAnh = async(req, res) => {
             return prepareResponse(res, 400, "Failed", result)
            
         } else {
-            return prepareResponse(res, 200, "Get all bao_cao_hinh_anh success", { bao_cao_hinh_anh: result })
+            for(let i = 0; i < result.rows.length; i++){
+                const wkbString = result.rows[i].geo
+                const buffer = Buffer.from(wkbString, 'hex');
+                const geometry = wkx.Geometry.parse(buffer);
+                const point = geometry.toGeoJSON().coordinates;
+                console.log(point);
+                result.rows[i].geo = point;
+            }
+            return prepareResponse(res, 200, "Get all bao_cao_hinh_anh success", { bao_cao_hinh_anh: result.rows })
         }
     });
 }

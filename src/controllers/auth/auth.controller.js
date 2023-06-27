@@ -68,146 +68,167 @@ const schemaLoginUser = Joi.object({
 //     return apiResponse.response_status(res, result.error.message, 400)
 //   }
 let refreshTokens = [];
-const signIncontroller = async(req, res) => {
+const signIncontroller = async (req, res) => {
     try {
         var data = req.body;
+        
 
         const { error } = validateLoginData(req.body);
         if (error) {
             return prepareResponse(res, 400, error.details[0].message, null);
         }
 
-        Account.getByPhoneAndPassword(data, async function(err, account) {
-            if (account) {
+        Account.getByUsernameAndPassword(data, async function (status, result) {
+            if (status) {
+                const account = result.rows[0]
+                console.log(account)
                 const payload = {
-                    ID: account.ID,
-                    Phone: account.Phone,
-                    Email: account.Email,
-                    FullName: account.FullName,
-                    Role: account.Role,
-                    Status: account.Status,
+                    
+                    phone: account.phone,
+                    role: account.role,
+                    ten: account.ten,
+                    email: account.email,
+                    chuc_danh: account.chuc_danh,
+                    dia_chi: account.dia_chi,
+                    cap_tren: account.cap_tren,
+                    ngay_tao: account.ngay_tao,
+                    ho: account.ho,
+                    username: account.username,
+                   
                 };
-                if (account.Role == 0) {
-                    await Student.getStudentByAccountId(
-                        account.ID,
-                        async function(err, infor) {
-                            if (!err) {
-                                payload.Infor = infor;
 
-                                const accessToken = await jwt.generateAccessToken(payload);
-                                const refreshToken = await jwt.generateRefreshToken(payload);
 
-                                refreshTokens.push(refreshToken);
 
-                                return prepareResponse(res, 200, "Login successful", {
-                                    accessToken,
-                                    refreshToken,
-                                });
-                            } else {
-                                const accessToken = await jwt.generateAccessToken(payload);
-                                const refreshToken = await jwt.generateRefreshToken(payload);
+                const accessToken = await jwt.generateAccessToken(payload);
+                const refreshToken = await jwt.generateRefreshToken(payload);
 
-                                refreshTokens.push(refreshToken);
+                refreshTokens.push(refreshToken);
 
-                                return prepareResponse(res, 200, "Login successful", {
-                                    accessToken,
-                                    refreshToken,
-                                });
-                            }
-                        }
-                    );
+                return prepareResponse(res, 200, "Login successful", {
+                    accessToken,
+                    refreshToken,
+                });
+                // if (account.Role == 0) {
+                //     await Student.getStudentByAccountId(
+                //         account.ID,
+                //         async function(err, infor) {
+                //             if (!err) {
+                //                 payload.Infor = infor;
 
-                } else if (account.Role == 1) {
-                    await Accountant.getAccountantByAccountId(
-                        account.ID,
-                        async function(err, infor) {
-                            if (!err) {
-                                payload.Infor = infor;
+                //                 const accessToken = await jwt.generateAccessToken(payload);
+                //                 const refreshToken = await jwt.generateRefreshToken(payload);
 
-                                const accessToken = await jwt.generateAccessToken(payload);
-                                const refreshToken = await jwt.generateRefreshToken(payload);
+                //                 refreshTokens.push(refreshToken);
 
-                                refreshTokens.push(refreshToken);
+                //                 return prepareResponse(res, 200, "Login successful", {
+                //                     accessToken,
+                //                     refreshToken,
+                //                 });
+                //             } else {
+                //                 const accessToken = await jwt.generateAccessToken(payload);
+                //                 const refreshToken = await jwt.generateRefreshToken(payload);
 
-                                return prepareResponse(res, 200, "Login successful", {
-                                    accessToken,
-                                    refreshToken,
-                                });
-                            } else {
-                                const accessToken = await jwt.generateAccessToken(payload);
-                                const refreshToken = await jwt.generateRefreshToken(payload);
+                //                 refreshTokens.push(refreshToken);
 
-                                refreshTokens.push(refreshToken);
+                //                 return prepareResponse(res, 200, "Login successful", {
+                //                     accessToken,
+                //                     refreshToken,
+                //                 });
+                //             }
+                //         }
+                //     );
 
-                                return prepareResponse(res, 200, "Login successful", {
-                                    accessToken,
-                                    refreshToken,
-                                });
-                            }
-                        }
-                    );
+                // } else if (account.Role == 1) {
+                //     await Accountant.getAccountantByAccountId(
+                //         account.ID,
+                //         async function(err, infor) {
+                //             if (!err) {
+                //                 payload.Infor = infor;
 
-                } else if (account.Role == 2) {
-                    await Admission.getAdmissionByAccountId(
-                        account.ID,
-                        async function(err, infor) {
-                            if (!err) {
-                                payload.Infor = infor;
+                //                 const accessToken = await jwt.generateAccessToken(payload);
+                //                 const refreshToken = await jwt.generateRefreshToken(payload);
 
-                                const accessToken = await jwt.generateAccessToken(payload);
-                                const refreshToken = await jwt.generateRefreshToken(payload);
+                //                 refreshTokens.push(refreshToken);
 
-                                refreshTokens.push(refreshToken);
+                //                 return prepareResponse(res, 200, "Login successful", {
+                //                     accessToken,
+                //                     refreshToken,
+                //                 });
+                //             } else {
+                //                 const accessToken = await jwt.generateAccessToken(payload);
+                //                 const refreshToken = await jwt.generateRefreshToken(payload);
 
-                                return prepareResponse(res, 200, "Login successful", {
-                                    accessToken,
-                                    refreshToken,
-                                });
-                            } else {
-                                const accessToken = await jwt.generateAccessToken(payload);
-                                const refreshToken = await jwt.generateRefreshToken(payload);
+                //                 refreshTokens.push(refreshToken);
 
-                                refreshTokens.push(refreshToken);
+                //                 return prepareResponse(res, 200, "Login successful", {
+                //                     accessToken,
+                //                     refreshToken,
+                //                 });
+                //             }
+                //         }
+                //     );
 
-                                return prepareResponse(res, 200, "Login successful", {
-                                    accessToken,
-                                    refreshToken,
-                                });
-                            }
-                        }
-                    );
-                } else if (account.Role == 3) {
-                    await AdmissionManager.getAdmissionManagerByAccountId(
-                        account.ID,
-                        async function(err, infor) {
-                            if (!err) {
-                                payload.Infor = infor;
+                // } else if (account.Role == 2) {
+                //     await Admission.getAdmissionByAccountId(
+                //         account.ID,
+                //         async function(err, infor) {
+                //             if (!err) {
+                //                 payload.Infor = infor;
 
-                                const accessToken = await jwt.generateAccessToken(payload);
-                                const refreshToken = await jwt.generateRefreshToken(payload);
+                //                 const accessToken = await jwt.generateAccessToken(payload);
+                //                 const refreshToken = await jwt.generateRefreshToken(payload);
 
-                                refreshTokens.push(refreshToken);
+                //                 refreshTokens.push(refreshToken);
 
-                                return prepareResponse(res, 200, "Login successful", {
-                                    accessToken,
-                                    refreshToken,
-                                });
-                            } else {
-                                const accessToken = await jwt.generateAccessToken(payload);
-                                const refreshToken = await jwt.generateRefreshToken(payload);
+                //                 return prepareResponse(res, 200, "Login successful", {
+                //                     accessToken,
+                //                     refreshToken,
+                //                 });
+                //             } else {
+                //                 const accessToken = await jwt.generateAccessToken(payload);
+                //                 const refreshToken = await jwt.generateRefreshToken(payload);
 
-                                refreshTokens.push(refreshToken);
+                //                 refreshTokens.push(refreshToken);
 
-                                return prepareResponse(res, 200, "Login successful", {
-                                    accessToken,
-                                    refreshToken,
-                                });
-                            }
-                        }
-                    );
-                }
+                //                 return prepareResponse(res, 200, "Login successful", {
+                //                     accessToken,
+                //                     refreshToken,
+                //                 });
+                //             }
+                //         }
+                //     );
+                // } else if (account.Role == 3) {
+                //     await AdmissionManager.getAdmissionManagerByAccountId(
+                //         account.ID,
+                //         async function(err, infor) {
+                //             if (!err) {
+                //                 payload.Infor = infor;
+
+                //                 const accessToken = await jwt.generateAccessToken(payload);
+                //                 const refreshToken = await jwt.generateRefreshToken(payload);
+
+                //                 refreshTokens.push(refreshToken);
+
+                //                 return prepareResponse(res, 200, "Login successful", {
+                //                     accessToken,
+                //                     refreshToken,
+                //                 });
+                //             } else {
+                //                 const accessToken = await jwt.generateAccessToken(payload);
+                //                 const refreshToken = await jwt.generateRefreshToken(payload);
+
+                //                 refreshTokens.push(refreshToken);
+
+                //                 return prepareResponse(res, 200, "Login successful", {
+                //                     accessToken,
+                //                     refreshToken,
+                //                 });
+                //             }
+                //         }
+                //     );
+                // }
             } else {
-                return prepareResponse(res, 401, "Phone or password is incorrect", err);
+                return prepareResponse(res, 401, "Phone or password is incorrect", result);
             }
         });
     } catch (err) {
@@ -215,7 +236,7 @@ const signIncontroller = async(req, res) => {
     }
 };
 
-const refreshToken = async(req, res) => {
+const refreshToken = async (req, res) => {
     const refreshToken = req.body.refresh_token;
     if (refreshToken == null)
         return prepareResponse(res, 401, "token null", null);
@@ -239,11 +260,11 @@ const refreshToken = async(req, res) => {
     // })
 };
 
-const updateProfile = async(req, res) => {
+const updateProfile = async (req, res) => {
     var data = req.body;
 
     if (req.user.Role == 1) {
-        Accountant.updateProfile(data, function(err, account) {
+        Accountant.updateProfile(data, function (err, account) {
             if (!err) {
                 return prepareResponse(res, 200, "update succesful", account);
             } else {
@@ -251,7 +272,7 @@ const updateProfile = async(req, res) => {
             }
         });
     } else if (req.user.Role == 0) {
-        Student.updateProfile(data, function(err, account) {
+        Student.updateProfile(data, function (err, account) {
             if (!err) {
                 return prepareResponse(res, 200, "update succesful", account);
             } else {
@@ -259,7 +280,7 @@ const updateProfile = async(req, res) => {
             }
         });
     } else if (req.user.Role == 2) {
-        Admission.updateProfile(data, function(err, account) {
+        Admission.updateProfile(data, function (err, account) {
             if (!err) {
                 return prepareResponse(res, 200, "update succesful", account);
             } else {
@@ -267,7 +288,7 @@ const updateProfile = async(req, res) => {
             }
         });
     } else if (req.user.Role == 3) {
-        AdmissionManager.updateProfile(data, function(err, account) {
+        AdmissionManager.updateProfile(data, function (err, account) {
             if (!err) {
                 return prepareResponse(res, 200, "update succesful", account);
             } else {
@@ -277,14 +298,14 @@ const updateProfile = async(req, res) => {
     }
 };
 
-const getProfile = async(req, res) => {
+const getProfile = async (req, res) => {
     const data = req.body
     console.log(data);
 
     if (data.Role == 0) {
         await Student.getStudentByAccountId(
             data.Id,
-            async function(err, infor) {
+            async function (err, infor) {
                 if (!err) {
 
 
@@ -302,7 +323,7 @@ const getProfile = async(req, res) => {
     } else if (data.Role == 1) {
         await Accountant.getAccountantByAccountId(
             data.Id,
-            async function(err, infor) {
+            async function (err, infor) {
                 if (!err) {
 
                     return prepareResponse(res, 200, "Get profile successful", { infor: infor });
@@ -319,7 +340,7 @@ const getProfile = async(req, res) => {
     } else if (data.Role == 2) {
         await Admission.getAdmissionByAccountId(
             data.Id,
-            async function(err, infor) {
+            async function (err, infor) {
                 if (!err) {
 
 
@@ -338,7 +359,7 @@ const getProfile = async(req, res) => {
     } else if (data.Role == 3) {
         await AdmissionManager.getAdmissionManagerByAccountId(
             data.Id,
-            async function(err, infor) {
+            async function (err, infor) {
                 if (!err) {
 
 
@@ -357,7 +378,7 @@ const getProfile = async(req, res) => {
 };
 
 // change password
-const changePassword = async(req, res) => {
+const changePassword = async (req, res) => {
     try {
         var data = {
             ID: req.user.ID,
@@ -370,7 +391,7 @@ const changePassword = async(req, res) => {
         } else {
 
 
-            Account.changePassword(data, function(err, account) {
+            Account.changePassword(data, function (err, account) {
                 if (err) {
                     return prepareResponse(res, 400, "Update password faild", account);
 
@@ -390,15 +411,15 @@ const changePassword = async(req, res) => {
 
 };
 
-const updateAccount = async(req, res) => {
+const updateAccount = async (req, res) => {
     //update account
 };
 
-const home = async(req, res) => {
+const home = async (req, res) => {
     res.render("login");
 };
 
-const isAuth = async function(req, res, next) {
+const isAuth = async function (req, res, next) {
     var _token = req.headers.authorization;
     if (_token) {
         try {
@@ -416,7 +437,7 @@ const isAuth = async function(req, res, next) {
     console.log(_token);
 };
 
-const logout = async(req, res) => {
+const logout = async (req, res) => {
     const refreshToken = req.body.token;
     refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
     return prepareResponse(res, 200, "logout successful", null);

@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require('multer');
 const path = require('path');
 var { prepareResponse } = require('../common/response');
+const {validateEmptyBaoCao} = require('../middleware/joiMiddleware');
 const {
     getAllBaoCaoHinhAnh,
     createNewBaoCaoHinhAnh,
@@ -57,12 +58,13 @@ const uploadFile = multer({
     storage: storage,
 })
 
-baoCaoHinhAnhRouter.post('/uploadBaoCaoHinhAnh', uploadFile.array('File'), async(req, res) => {
+baoCaoHinhAnhRouter.post('/uploadBaoCaoHinhAnh', uploadFile.array('File'), validateEmptyBaoCao, async(req, res) => {
    try {
         let files = req.files
+        
+        
         let data = {...req.body };
-        console.log(files)
-        console.log(data)
+        
         data.File = ''
         for(let i = 0; i < files.length; i++){
             
@@ -73,7 +75,15 @@ baoCaoHinhAnhRouter.post('/uploadBaoCaoHinhAnh', uploadFile.array('File'), async
                 data.File += `${files[i].filename}, `
             }
         }
-        console.log(data)
+        data.Status = 0
+        data.NgayTao = new Date()
+        data.geo = {
+            type: 'Point',
+            coordinates: [21.0278, 105.8342]
+          }
+
+        //   'POINT(-74.0445 40.6892)'
+        
 
 
 
@@ -84,6 +94,8 @@ baoCaoHinhAnhRouter.post('/uploadBaoCaoHinhAnh', uploadFile.array('File'), async
         //         data[keys[i]] = req.files[keys[i]][0].filename
         //     }
         // }
+
+       
 
         await ImageReport.create(data, async function(status, result) {
             if (status) {

@@ -3,8 +3,8 @@ const Joi = require('joi');
 
 const requiredString = Joi.string().required();
 const emailValidation = Joi.string().email().message('Email is not valid');
-const phoneValidation = Joi.string().pattern(/^[0-9]{10,15}$/).message('Phone number must be 10-15 digits');
-const passwordValidation = Joi.string().min(6).max(30).message('password must be at least 8 characters');
+const usernameValidation = Joi.string().required().min(6).message('Phone number must be 10-15 digits');
+const passwordValidation = Joi.string().required().min(6).max(30).message('password must be at least 8 characters');
 // const fullNameValidation = Joi.string().regex(/^[a-zA-ZÀ-ÿ-'\s]+$/).min(3).max(50).message('Full name must be at least 3 characters, maximum 50 characters and not contain special characters');
 const fullNameValidation = Joi.string()
     .regex(/^[a-zA-ZÀ-Ỹ-]+(\s+[a-zA-ZÀ-Ỹ-]+)*$/)
@@ -19,7 +19,7 @@ const genderValidation = Joi.string().valid('male', 'female', 'other')
 
 const validateLoginData = (data) => {
     const schema = Joi.object({
-        phone: phoneValidation.required(),
+        username: usernameValidation.required(),
         password: passwordValidation.required(),
     });
 
@@ -73,10 +73,27 @@ const validatePassword = (data) => {
     return schema.validate(data);
 };
 
+
+const validateEmptyBaoCaoHinhAnh = (data) => {
+    const schema = Joi.object({
+
+        // khác ''
+        TieuDe: Joi.string().required(),
+        LoaiBaoCao: Joi.string().required(),
+        DoiTuong: Joi.string().required(),
+        DonViChuTri: Joi.string().required(),
+
+
+        
+    });
+
+    return schema.validate(data);
+};
 module.exports = {
     validateLoginData,
     validateProfileData,
     validateAmountData,
     validateUserCreationData,
-    validatePassword
+    validatePassword,
+    validateEmptyBaoCaoHinhAnh
 };

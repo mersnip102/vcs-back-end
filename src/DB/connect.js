@@ -1,16 +1,23 @@
 var mysql = require('mysql');
+const { Pool } = require('pg');
 
-const connection = mysql.createConnection({
+const connection = new Pool({
     // host: "sql.freedb.tech",
     // user: "freedb_tuyen_sinh",
     // password: "Ma&hgQbH2m@!8yT",
     // database: "freedb_Final_Project"
 
-    host: "localhost",
-    user: "root",
-    port: "8889",
-    password: "root",
-    database: "pakn"
+    // host: "localhost",
+    // user: "root",
+    // port: "6969",
+    // password: "root",
+    // database: "pakn"
+
+    user: 'postgres',
+    host: 'localhost',
+    database: 'pakn',
+    password: 'quyen692001',
+    port: 6969, // port mặc định của PostgreSQL là 5432
 });
 
 connection.connect((error) => {
@@ -19,8 +26,17 @@ connection.connect((error) => {
         return;
     }
 
-    console.log('Connected as id ' + connection.threadId);
+    console.log('Connected DB');
 });
+
+// // Thực hiện truy vấn để lấy dữ liệu từ bảng "users"
+// connection.query('SELECT * FROM bao_cao_hinh_anh', (error, results) => {
+//     if (error) {
+//       throw error;
+//     }
+//     console.log(results.rows);
+//     // connection.end(); // Đóng kết nối với PostgreSQL
+//   });
 
 module.exports = connection;
 

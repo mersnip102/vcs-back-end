@@ -3,7 +3,8 @@ const {
     validateProfileData,
     validateAmountData,
     validateUserCreationData,
-    validatePassword
+    validatePassword,
+    validateEmptyBaoCaoHinhAnh,
 } = require('../common/validation');
 
 const { prepareResponse } = require('../common/response');
@@ -43,5 +44,23 @@ const validatePasswordChange = (req, res, next) => {
     next();
 };
 
+const validateEmptyBaoCao = (req, res, next) => {
+    console.log(req.body)
 
-module.exports = { validateDeposit, validateCreateAccountStudent, validatePasswordChange };
+    const { error } = validateEmptyBaoCaoHinhAnh({
+        TieuDe: req.body.TieuDe,
+        LoaiBaoCao: req.body.LoaiBaoCao,
+        DoiTuong: req.body.DoiTuong,
+        DonViChuTri: req.body.DonViChuTri,
+
+    });
+    if (error) {
+        console.log(error.details[0].message)
+        return prepareResponse(res, 400, error.details[0].message, { message: error.details[0].message });
+    }
+    next();
+};
+
+
+
+module.exports = { validateDeposit, validateCreateAccountStudent, validatePasswordChange, validateEmptyBaoCao };
