@@ -76,161 +76,164 @@ const signIncontroller = async (req, res) => {
         const { error } = validateLoginData(req.body);
         if (error) {
             return prepareResponse(res, 400, error.details[0].message, null);
+        } else {
+            Account.getByUsernameAndPassword(data, async function (status, result) {
+                if (status) {
+                    const account = result.rows[0]
+                    console.log(account)
+                    const payload = {
+                        id: account.id,
+                        phone: account.phone,
+                        role: account.role,
+                        ten: account.ten,
+                        email: account.email,
+                        chuc_danh: account.chuc_danh,
+                        dia_chi: account.dia_chi,
+                        cap_tren: account.cap_tren,
+                        ngay_tao: account.ngay_tao,
+                        ho: account.ho,
+                        username: account.username,
+                       
+                    };
+    
+    
+    
+                    const accessToken = await jwt.generateAccessToken(payload);
+                    const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    refreshTokens.push(refreshToken);
+    
+                    return prepareResponse(res, 200, "Login successful", {
+                        accessToken,
+                        refreshToken,
+                    });
+                    // if (account.Role == 0) {
+                    //     await Student.getStudentByAccountId(
+                    //         account.ID,
+                    //         async function(err, infor) {
+                    //             if (!err) {
+                    //                 payload.Infor = infor;
+    
+                    //                 const accessToken = await jwt.generateAccessToken(payload);
+                    //                 const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    //                 refreshTokens.push(refreshToken);
+    
+                    //                 return prepareResponse(res, 200, "Login successful", {
+                    //                     accessToken,
+                    //                     refreshToken,
+                    //                 });
+                    //             } else {
+                    //                 const accessToken = await jwt.generateAccessToken(payload);
+                    //                 const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    //                 refreshTokens.push(refreshToken);
+    
+                    //                 return prepareResponse(res, 200, "Login successful", {
+                    //                     accessToken,
+                    //                     refreshToken,
+                    //                 });
+                    //             }
+                    //         }
+                    //     );
+    
+                    // } else if (account.Role == 1) {
+                    //     await Accountant.getAccountantByAccountId(
+                    //         account.ID,
+                    //         async function(err, infor) {
+                    //             if (!err) {
+                    //                 payload.Infor = infor;
+    
+                    //                 const accessToken = await jwt.generateAccessToken(payload);
+                    //                 const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    //                 refreshTokens.push(refreshToken);
+    
+                    //                 return prepareResponse(res, 200, "Login successful", {
+                    //                     accessToken,
+                    //                     refreshToken,
+                    //                 });
+                    //             } else {
+                    //                 const accessToken = await jwt.generateAccessToken(payload);
+                    //                 const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    //                 refreshTokens.push(refreshToken);
+    
+                    //                 return prepareResponse(res, 200, "Login successful", {
+                    //                     accessToken,
+                    //                     refreshToken,
+                    //                 });
+                    //             }
+                    //         }
+                    //     );
+    
+                    // } else if (account.Role == 2) {
+                    //     await Admission.getAdmissionByAccountId(
+                    //         account.ID,
+                    //         async function(err, infor) {
+                    //             if (!err) {
+                    //                 payload.Infor = infor;
+    
+                    //                 const accessToken = await jwt.generateAccessToken(payload);
+                    //                 const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    //                 refreshTokens.push(refreshToken);
+    
+                    //                 return prepareResponse(res, 200, "Login successful", {
+                    //                     accessToken,
+                    //                     refreshToken,
+                    //                 });
+                    //             } else {
+                    //                 const accessToken = await jwt.generateAccessToken(payload);
+                    //                 const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    //                 refreshTokens.push(refreshToken);
+    
+                    //                 return prepareResponse(res, 200, "Login successful", {
+                    //                     accessToken,
+                    //                     refreshToken,
+                    //                 });
+                    //             }
+                    //         }
+                    //     );
+                    // } else if (account.Role == 3) {
+                    //     await AdmissionManager.getAdmissionManagerByAccountId(
+                    //         account.ID,
+                    //         async function(err, infor) {
+                    //             if (!err) {
+                    //                 payload.Infor = infor;
+    
+                    //                 const accessToken = await jwt.generateAccessToken(payload);
+                    //                 const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    //                 refreshTokens.push(refreshToken);
+    
+                    //                 return prepareResponse(res, 200, "Login successful", {
+                    //                     accessToken,
+                    //                     refreshToken,
+                    //                 });
+                    //             } else {
+                    //                 const accessToken = await jwt.generateAccessToken(payload);
+                    //                 const refreshToken = await jwt.generateRefreshToken(payload);
+    
+                    //                 refreshTokens.push(refreshToken);
+    
+                    //                 return prepareResponse(res, 200, "Login successful", {
+                    //                     accessToken,
+                    //                     refreshToken,
+                    //                 });
+                    //             }
+                    //         }
+                    //     );
+                    // }
+                } else {
+                    return prepareResponse(res, 400, "Phone or password is incorrect", result);
+                }
+            });
+            
         }
 
-        Account.getByUsernameAndPassword(data, async function (status, result) {
-            if (status) {
-                const account = result.rows[0]
-                console.log(account)
-                const payload = {
-                    
-                    phone: account.phone,
-                    role: account.role,
-                    ten: account.ten,
-                    email: account.email,
-                    chuc_danh: account.chuc_danh,
-                    dia_chi: account.dia_chi,
-                    cap_tren: account.cap_tren,
-                    ngay_tao: account.ngay_tao,
-                    ho: account.ho,
-                    username: account.username,
-                   
-                };
-
-
-
-                const accessToken = await jwt.generateAccessToken(payload);
-                const refreshToken = await jwt.generateRefreshToken(payload);
-
-                refreshTokens.push(refreshToken);
-
-                return prepareResponse(res, 200, "Login successful", {
-                    accessToken,
-                    refreshToken,
-                });
-                // if (account.Role == 0) {
-                //     await Student.getStudentByAccountId(
-                //         account.ID,
-                //         async function(err, infor) {
-                //             if (!err) {
-                //                 payload.Infor = infor;
-
-                //                 const accessToken = await jwt.generateAccessToken(payload);
-                //                 const refreshToken = await jwt.generateRefreshToken(payload);
-
-                //                 refreshTokens.push(refreshToken);
-
-                //                 return prepareResponse(res, 200, "Login successful", {
-                //                     accessToken,
-                //                     refreshToken,
-                //                 });
-                //             } else {
-                //                 const accessToken = await jwt.generateAccessToken(payload);
-                //                 const refreshToken = await jwt.generateRefreshToken(payload);
-
-                //                 refreshTokens.push(refreshToken);
-
-                //                 return prepareResponse(res, 200, "Login successful", {
-                //                     accessToken,
-                //                     refreshToken,
-                //                 });
-                //             }
-                //         }
-                //     );
-
-                // } else if (account.Role == 1) {
-                //     await Accountant.getAccountantByAccountId(
-                //         account.ID,
-                //         async function(err, infor) {
-                //             if (!err) {
-                //                 payload.Infor = infor;
-
-                //                 const accessToken = await jwt.generateAccessToken(payload);
-                //                 const refreshToken = await jwt.generateRefreshToken(payload);
-
-                //                 refreshTokens.push(refreshToken);
-
-                //                 return prepareResponse(res, 200, "Login successful", {
-                //                     accessToken,
-                //                     refreshToken,
-                //                 });
-                //             } else {
-                //                 const accessToken = await jwt.generateAccessToken(payload);
-                //                 const refreshToken = await jwt.generateRefreshToken(payload);
-
-                //                 refreshTokens.push(refreshToken);
-
-                //                 return prepareResponse(res, 200, "Login successful", {
-                //                     accessToken,
-                //                     refreshToken,
-                //                 });
-                //             }
-                //         }
-                //     );
-
-                // } else if (account.Role == 2) {
-                //     await Admission.getAdmissionByAccountId(
-                //         account.ID,
-                //         async function(err, infor) {
-                //             if (!err) {
-                //                 payload.Infor = infor;
-
-                //                 const accessToken = await jwt.generateAccessToken(payload);
-                //                 const refreshToken = await jwt.generateRefreshToken(payload);
-
-                //                 refreshTokens.push(refreshToken);
-
-                //                 return prepareResponse(res, 200, "Login successful", {
-                //                     accessToken,
-                //                     refreshToken,
-                //                 });
-                //             } else {
-                //                 const accessToken = await jwt.generateAccessToken(payload);
-                //                 const refreshToken = await jwt.generateRefreshToken(payload);
-
-                //                 refreshTokens.push(refreshToken);
-
-                //                 return prepareResponse(res, 200, "Login successful", {
-                //                     accessToken,
-                //                     refreshToken,
-                //                 });
-                //             }
-                //         }
-                //     );
-                // } else if (account.Role == 3) {
-                //     await AdmissionManager.getAdmissionManagerByAccountId(
-                //         account.ID,
-                //         async function(err, infor) {
-                //             if (!err) {
-                //                 payload.Infor = infor;
-
-                //                 const accessToken = await jwt.generateAccessToken(payload);
-                //                 const refreshToken = await jwt.generateRefreshToken(payload);
-
-                //                 refreshTokens.push(refreshToken);
-
-                //                 return prepareResponse(res, 200, "Login successful", {
-                //                     accessToken,
-                //                     refreshToken,
-                //                 });
-                //             } else {
-                //                 const accessToken = await jwt.generateAccessToken(payload);
-                //                 const refreshToken = await jwt.generateRefreshToken(payload);
-
-                //                 refreshTokens.push(refreshToken);
-
-                //                 return prepareResponse(res, 200, "Login successful", {
-                //                     accessToken,
-                //                     refreshToken,
-                //                 });
-                //             }
-                //         }
-                //     );
-                // }
-            } else {
-                return prepareResponse(res, 401, "Phone or password is incorrect", result);
-            }
-        });
+        
     } catch (err) {
         return prepareResponse(res, 500, "Internal server error", err);
     }

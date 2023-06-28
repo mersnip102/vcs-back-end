@@ -83,8 +83,8 @@ const ImageReport = function(baocao) {
 // };
 
 ImageReport.create = async function(newImageReport, result) {
-    console.log(newImageReport.Geo);
-    await db.query("INSERT INTO bao_cao_hinh_anh (tieu_de, noi_dung, kien_nghi, loai_bao_cao, doi_tuong, don_vi_chu_tri, don_vi_lien_quan, loai_vu_viec, file, kinh_do, vi_do, dia_chi, ngay_tao, status, geo, nguoi_bao_cao) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, ST_GeomFromText($11, 4326), $12, $13, $14, ST_GeomFromText($15, 4326), $16) RETURNING id", [newImageReport.TieuDe, newImageReport.NoiDung, newImageReport.KienNghi, newImageReport.LoaiBaoCao, newImageReport.DoiTuong, newImageReport.DonViChuTri, newImageReport.DonViLiQuan, newImageReport.LoaiVuViec, newImageReport.File, newImageReport.KinhDo, newImageReport.ViDo, newImageReport.DiaChi, newImageReport.NgayTao, newImageReport.Status, newImageReport.Geo, newImageReport.NguoiBaoCao], function(err, res) {
+    console.log(newImageReport.NguoiBaoCao);
+    await db.query("INSERT INTO bao_cao_hinh_anh (tieu_de, noi_dung, kien_nghi, loai_bao_cao, doi_tuong, don_vi_chu_tri, don_vi_lien_quan, loai_vu_viec, file, kinh_do, vi_do, dia_chi, ngay_tao, status, geo, nguoi_bao_cao) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)", [newImageReport.TieuDe, newImageReport.NoiDung, newImageReport.KienNghi, newImageReport.LoaiBaoCao, newImageReport.DoiTuong, newImageReport.DonViChuTri, newImageReport.DonViLienQuan, newImageReport.LoaiVuViec, newImageReport.File, newImageReport.KinhDo, newImageReport.ViDo, newImageReport.DiaChi, newImageReport.NgayTao, newImageReport.Status, newImageReport.Geo, parseInt(newImageReport.NguoiBaoCao)], function(err, res) {
         if (err) {
             
             result(true, err.message);
@@ -95,22 +95,35 @@ ImageReport.create = async function(newImageReport, result) {
     );
 };
 
-ImageReport.getAll = async function(result) {
-    await db.query("SELECT * FROM bao_cao_hinh_anh", function(err, res) {
+ImageReport.getAll = async function(query, result) {
+    sql = ''
+    if(query.role == 1) {
+        sql = "SELECT * FROM bao_cao_hinh_anh WHERE nguoi_bao_cao = $1"
+    }
+    if(query.role == 2) {
+        sql = "SELECT * FROM bao_cao_hinh_anh rp LEFT JOIN account ac ON rp.nguoi_bao_cao = ac.id WHERE ac.cap_tren = $1"
+        
+    }
+
+    console.log(query.id);
+
+    await db.query(sql, [query.id], function(err, res) {
         if (err) {
             result(true, err);
         } else {
-            result(false, res);
+            console.log("okeeeee");
+            result(false, res.rows);
         }
     });
 };
 
 ImageReport.getById = async function(id, result) {
-    await db.query("SELECT * FROM bao_cao_hinh_anh WHERE Id = ?", id, function(err, res) {
+    await db.query("SELECT * FROM bao_cao_hinh_anh WHERE id = $1", [id], function(err, res) {
         if (err) {
             result(true, err);
         } else {
-            result(false, res);
+            console.log(res);
+            result(false, res.rows);
         }
     });
 };
@@ -126,8 +139,9 @@ ImageReport.updateById = async function(id, baocao, result) {
 };
 
 ImageReport.delete = async function(id, result) {
-    await db.query("DELETE FROM bao_cao_hinh_anh WHERE Id = ?", [id], function(err, res) {
+    await db.query("DELETE FROM bao_cao_hinh_anh WHERE id = $1", [id], function(err, res) {
         if (err) {
+            console.log(err);
             result(true, err);
         } else {
             result(false, res);

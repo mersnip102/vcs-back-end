@@ -25,12 +25,12 @@ baoCaoHinhAnhRouter.put(
 );
 
 baoCaoHinhAnhRouter.delete(
-    "/deleteBaoCaoHinhAnh/:Id",
+    "/deleteBaoCaoHinhAnh/:id",
     deleteBaoCaoHinhAnh,
 );
 
 baoCaoHinhAnhRouter.get("/getAllBaoCaoHinhAnh", getAllBaoCaoHinhAnh);
-baoCaoHinhAnhRouter.get("/getBaoCaoHinhAnhById/:Id", getBaoCaoHinhAnhById);
+baoCaoHinhAnhRouter.get("/getBaoCaoHinhAnhById/:id", getBaoCaoHinhAnhById);
 
 
 const storage = multer.diskStorage({
@@ -77,12 +77,13 @@ baoCaoHinhAnhRouter.post('/uploadBaoCaoHinhAnh', uploadFile.array('File'), valid
         }
         data.Status = 0
         data.NgayTao = new Date()
-        data.geo = {
-            type: 'Point',
-            coordinates: [21.0278, 105.8342]
-          }
 
-        //   'POINT(-74.0445 40.6892)'
+        // data.Geo = {
+        //     type: 'Point',
+        //     coordinates: [21.0278, 105.8342]
+        //   }
+
+        data.Geo = 'POINT(-74.0445 40.6892)'
         
 
 
@@ -100,9 +101,7 @@ baoCaoHinhAnhRouter.post('/uploadBaoCaoHinhAnh', uploadFile.array('File'), valid
         await ImageReport.create(data, async function(status, result) {
             if (status) {
                 console.log(result)
-                return prepareResponse(res, 400, 'Tạo báo báo failed', result);
-               
-
+                return prepareResponse(res, 400, 'Tạo báo báo thất bại', result);
             } else {
                 
                 return prepareResponse(res, 201, 'Tạo báo báo thành công', { result: result });

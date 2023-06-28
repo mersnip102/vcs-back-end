@@ -30,8 +30,8 @@ const Account = function(account) {
 Account.getByUsernameAndPassword = async function(data, result) {
    
     await connection.query('SELECT * FROM account WHERE username = $1 AND password = $2', [data.username, data.password], function(err, account) {
-        if (err || account.length == 0 || account == null) {
-            
+        if (err || account.rows.length == 0 || account.rows == null) {
+           
             result(false, err);
         } else {
             

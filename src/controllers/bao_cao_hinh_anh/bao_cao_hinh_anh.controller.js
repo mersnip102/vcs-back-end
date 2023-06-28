@@ -13,23 +13,52 @@ const {
 
 var Account = require("../../models/account.model");
 var ImageReport = require("../../models/bao_cao_hinh_anh.model");
+const e = require('express');
 
 
 const getAllBaoCaoHinhAnh = async(req, res) => {
-    ImageReport.getAll(async function(err, result) {
+    const query = req.query
+    ImageReport.getAll(query, async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Failed", result)
            
         } else {
-            for(let i = 0; i < result.rows.length; i++){
-                const wkbString = result.rows[i].geo
-                const buffer = Buffer.from(wkbString, 'hex');
-                const geometry = wkx.Geometry.parse(buffer);
-                const point = geometry.toGeoJSON().coordinates;
-                console.log(point);
-                result.rows[i].geo = point;
+            console.log(result);
+            for(let i = 0; i < result.length; i++){
+                // const wkbString = result[i].geo
+                // const buffer = Buffer.from(wkbString, 'hex');
+                // const geometry = wkx.Geometry.parse(buffer);
+                // const point = geometry.toGeoJSON().coordinates;
+                // console.log(point);
+                // result[i].geo = point;
+                if(result[i].geo != null && result[i].geo != undefined && result[i].geo != ''){
+                    const buffer = Buffer.from(result[i].geo, 'hex');
+                    const geometry = wkx.Geometry.parse(buffer);
+                    const geojson = geometry.toGeoJSON();
+                    console.log(geojson.coordinates);
+                    result[i].geo = geojson.coordinates;
+
+
+                }
+
+//                 const buffer = Buffer.from(result[i].geo, 'hex');
+// const geometry = wkx.Geometry.parse(buffer);
+// const geojson = geometry.toGeoJSON();
+// console.log(geojson);
+
+                if(result[i].status == 1){
+                    result[i].status = "Đã duyệt"
+                }else if(result[i].status == 0){
+                    result[i].status = "Không duyệt"
+                }else if(result[i].status == 2) {
+                    result[i].status = "Chờ duyệt"
+                }
+
+                
             }
-            return prepareResponse(res, 200, "Get all bao_cao_hinh_anh success", { bao_cao_hinh_anh: result.rows })
+            console.log(result);
+            
+            return prepareResponse(res, 200, "Get all bao_cao_hinh_anh success", {data: result})
         }
     });
 }
@@ -64,27 +93,42 @@ const updateBaoCaoHinhAnh = async(req, res) => {
 }
 
 const deleteBaoCaoHinhAnh = async(req, res) => {
-    var data = req.body;
+    var data = req.params;
     console.log(data);
-    ImageReport.delete(data, async function(err, result) {
+    ImageReport.delete(data.id, async function(err, result) {
         if (err) {
-            return prepareResponse(res, 400, "Failed", result)
+            return prepareResponse(res, 400, "Xóa báo cáo hình ảnh thất bại", result)
             
         } else {
-            return prepareResponse(res, 200, "Delete bao_cao_hinh_anh success", { bao_cao_hinh_anh: result })
+            return prepareResponse(res, 200, "Xóa báo cáo hình ảnh thành công", { bao_cao_hinh_anh: result })
             
         }
     });
 }
 
 const getBaoCaoHinhAnhById = async(req, res) => {
-    var data = req.body;
+    var data = req.params;
     console.log(data);
-    ImageReport.getById(data, async function(err, result) {
+    ImageReport.getById(data.id, async function(err, result) {
         if (err) {
-            return prepareResponse(res, 400, "Failed", result)
+            return prepareResponse(res, 400, "Lấy thông tin thất bại", result)
         } else {
-            return prepareResponse(res, 200, "Get bao_cao_hinh_anh by id success", { bao_cao_hinh_anh: result })
+           
+            if(result[0].geo != null && result[0].geo != undefined && result[0].geo != ''){
+                const buffer = Buffer.from(result[0].geo, 'hex');
+                const geometry = wkx.Geometry.parse(buffer);
+                const geojson = geometry.toGeoJSON();
+                
+                result[0].geo = {}
+                result[0].geo.lat =  geojson.coordinates[0]
+                result[0].geo.lng =  geojson.coordinates[1]
+                
+
+                
+            }
+            console.log(result[0].geo)
+
+            return prepareResponse(res, 200, "Lấy thông tin thành công", { data: result })
         }
     });
 }
