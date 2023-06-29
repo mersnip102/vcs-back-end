@@ -67,26 +67,28 @@ const getAllBaoCaoHinhAnh = async(req, res) => {
 const createNewBaoCaoHinhAnh = async(req, res) => {
     var data = req.body;
     console.log(data);
-    ImageReport.create(data, async function(err, result) {
-        if (err) {
-            return prepareResponse(res, 400, "Failed", result)
+    // ImageReport.create(data, async function(err, result) {
+    //     if (err) {
+    //         return prepareResponse(res, 400, "Failed", result)
             
-        } else {
-            return prepareResponse(res, 200, "Create bao_cao_hinh_anh success", { bao_cao_hinh_anh: result })
+    //     } else {
+    //         return prepareResponse(res, 200, "Create bao_cao_hinh_anh success", { bao_cao_hinh_anh: result })
             
-        }
-    });
+    //     }
+    // });
 }
 
-const updateBaoCaoHinhAnh = async(req, res) => {
-    var data = req.body;
-    console.log(data);
-    ImageReport.updateById(data, async function(err, result) {
+const updateStatusBaoCaoHinhAnh = async(req, res) => {
+    let data = req.body;
+    // let id = req.body.id;
+    console.log(req.body);
+    
+    ImageReport.updateStatus(data, async function(err, result) {
         if (err) {
-            return prepareResponse(res, 400, "Failed", result)
+            return prepareResponse(res, 400, "Chỉnh sửa báo cáo hình ảnh thất bại", result)
             
         } else {
-            return prepareResponse(res, 200, "Update bao_cao_hinh_anh success", { bao_cao_hinh_anh: result })
+            return prepareResponse(res, 200, "Chỉnh sửa báo cáo hình ảnh thành công", { data: result })
             
         }
     });
@@ -114,7 +116,7 @@ const getBaoCaoHinhAnhById = async(req, res) => {
             return prepareResponse(res, 400, "Lấy thông tin thất bại", result)
         } else {
            
-            if(result[0].geo != null && result[0].geo != undefined && result[0].geo != ''){
+            if(result[0].geo && result[0].geo != null && result[0].geo != undefined && result[0].geo != ''){
                 const buffer = Buffer.from(result[0].geo, 'hex');
                 const geometry = wkx.Geometry.parse(buffer);
                 const geojson = geometry.toGeoJSON();
@@ -151,7 +153,7 @@ const getBaoCaoHinhAnhById = async(req, res) => {
 module.exports = {
     getAllBaoCaoHinhAnh,
     createNewBaoCaoHinhAnh,
-    updateBaoCaoHinhAnh,
+    updateStatusBaoCaoHinhAnh,
     deleteBaoCaoHinhAnh,
     getBaoCaoHinhAnhById
 

@@ -6,7 +6,7 @@ const {validateEmptyBaoCao} = require('../middleware/joiMiddleware');
 const {
     getAllBaoCaoHinhAnh,
     createNewBaoCaoHinhAnh,
-    updateBaoCaoHinhAnh,
+    updateStatusBaoCaoHinhAnh,
     deleteBaoCaoHinhAnh,
     getBaoCaoHinhAnhById,
 } = require("../controllers/bao_cao_hinh_anh/bao_cao_hinh_anh.controller");
@@ -19,10 +19,10 @@ baoCaoHinhAnhRouter.post(
     createNewBaoCaoHinhAnh,
 );
 
-baoCaoHinhAnhRouter.put(
-    "/updateBaoCaoHinhAnh",
-    updateBaoCaoHinhAnh,
-);
+// baoCaoHinhAnhRouter.post(
+//     "/updateBaoCaoHinhAnh",
+//     updateBaoCaoHinhAnh,
+// );
 
 baoCaoHinhAnhRouter.delete(
     "/deleteBaoCaoHinhAnh/:id",
@@ -32,6 +32,7 @@ baoCaoHinhAnhRouter.delete(
 baoCaoHinhAnhRouter.get("/getAllBaoCaoHinhAnh", getAllBaoCaoHinhAnh);
 baoCaoHinhAnhRouter.get("/getBaoCaoHinhAnhById/:id", getBaoCaoHinhAnhById);
 
+baoCaoHinhAnhRouter.put("/updateStatus/:id", updateStatusBaoCaoHinhAnh);
 
 const storage = multer.diskStorage({
 
@@ -75,7 +76,7 @@ baoCaoHinhAnhRouter.post('/uploadBaoCaoHinhAnh', uploadFile.array('File'), valid
                 data.File += `${files[i].filename}, `
             }
         }
-        data.Status = 0
+        data.Status = 2
         data.NgayTao = new Date()
 
         // data.Geo = {
@@ -113,5 +114,62 @@ baoCaoHinhAnhRouter.post('/uploadBaoCaoHinhAnh', uploadFile.array('File'), valid
         });
     }
 });
+
+baoCaoHinhAnhRouter.put('/updateBaoCaoHinhAnh', uploadFile.array('File'), validateEmptyBaoCao, async(req, res) => {
+    try {
+         let files = req.files
+         
+         
+         
+         let data = {...req.body };
+         
+         data.File = ''
+         for(let i = 0; i < files.length; i++){
+             
+             
+             if(i == files.length - 1){
+                 data.File += `${files[i].filename}`
+             } else {
+                 data.File += `${files[i].filename}, `
+             }
+         }
+         data.Status = 2
+         data.NgayTao = new Date()
+ 
+         // data.Geo = {
+         //     type: 'Point',
+         //     coordinates: [21.0278, 105.8342]
+         //   }
+ 
+         data.Geo = 'POINT(-74.0445 40.6892)'
+         
+ 
+ 
+ 
+         // let keys = Object.keys(files)
+ 
+         // for (let i = 0; i < keys.length; i++) {
+         //     if (req.files[keys[i]] != undefined || req.files[keys[i]] != null) {
+         //         data[keys[i]] = req.files[keys[i]][0].filename
+         //     }
+         // }
+ 
+        
+ 
+         await ImageReport.updateById(data, async function(status, result) {
+             if (status) {
+                 console.log(result)
+                 return prepareResponse(res, 400, 'Tạo báo báo thất bại', result);
+             } else {
+                 
+                 return prepareResponse(res, 201, 'Tạo báo báo thành công', { result: result });
+             }
+         })
+     } catch (err) {
+         res.status(500).send({
+             message: `Could not upload PAKN: ${err}`,
+         });
+     }
+ });
 
 module.exports = { baoCaoHinhAnhRouter };

@@ -140,7 +140,7 @@ app.get('/download/:filename', (req, res) => {
 
 
     // Thay đổi đường dẫn này với thư mục chứa tập tin của bạn
-    const fileDirectory = path.join(__dirname, 'assets/uploads/chat/');
+    const fileDirectory = path.join(__dirname, 'assets/uploads/');
     console.log(fileDirectory)
 
     // Kiểm tra xem tập tin có tồn tại hay không

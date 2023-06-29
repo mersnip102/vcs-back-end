@@ -101,7 +101,7 @@ ImageReport.getAll = async function(query, result) {
         sql = "SELECT * FROM bao_cao_hinh_anh WHERE nguoi_bao_cao = $1"
     }
     if(query.role == 2) {
-        sql = "SELECT * FROM bao_cao_hinh_anh rp LEFT JOIN account ac ON rp.nguoi_bao_cao = ac.id WHERE ac.cap_tren = $1"
+        sql = "SELECT rp.*, tc.ten_to_chuc, ac.ho, ac.ten FROM bao_cao_hinh_anh rp LEFT JOIN account ac ON rp.nguoi_bao_cao = ac.id INNER JOIN to_chuc tc ON ac.to_chuc = tc.id WHERE ac.cap_tren = $1"
         
     }
 
@@ -128,8 +128,18 @@ ImageReport.getById = async function(id, result) {
     });
 };
 
-ImageReport.updateById = async function(id, baocao, result) {
-    await db.query("UPDATE bao_cao_hinh_anh SET TieuDe = ?, NoiDung = ?, KienNghi = ?, LoaiBaoCao = ?, DoiTuong = ?, DonViChuTri = ?, DonViLiQuan = ?, LoaiVuViec = ?, File = ?, KinhDo = ?, ViDo = ?, DiaChi = ?, NgayTao = ?, Status = ? WHERE Id = ?", [baocao.TieuDe, baocao.NoiDung, baocao.KienNghi, baocao.LoaiBaoCao, baocao.DoiTuong, baocao.DonViChuTri, baocao.DonViLiQuan, baocao.LoaiVuViec, baocao.File, baocao.KinhDo, baocao.ViDo, baocao.DiaChi, baocao.NgayTao, baocao.Status, id], function(err, res) {
+ImageReport.updateById = async function(newImageReport, result) {
+    await db.query("UPDATE bao_cao_hinh_anh SET tieu_de = $1, noi_dung = $2, kien_nghi = $3, loai_bao_cao = $4, doi_tuong = $5, don_vi_chu_tri = $6, don_vi_lien_quan = $7, loai_vu_viec = $8, file = $9, kinh_do = $10, vi_do = $11, dia_chi = $12, ngay_tao = $13, status = $14, geo = $15, nguoi_bao_cao = $16  WHERE id = $17", [newImageReport.TieuDe, newImageReport.NoiDung, newImageReport.KienNghi, newImageReport.LoaiBaoCao, newImageReport.DoiTuong, newImageReport.DonViChuTri, newImageReport.DonViLienQuan, newImageReport.LoaiVuViec, newImageReport.File, newImageReport.KinhDo, newImageReport.ViDo, newImageReport.DiaChi, newImageReport.NgayTao, newImageReport.Status, newImageReport.Geo, parseInt(newImageReport.NguoiBaoCao), newImageReport.idBaoCao], function(err, res) {
+        if (err) {
+            result(true, err);
+        } else {
+            result(false, res);
+        }
+    });
+};
+
+ImageReport.updateStatus = async function(statusData, result) {
+    await db.query("UPDATE bao_cao_hinh_anh SET status = $1 WHERE id = $2", [statusData.status, statusData.idBaoCao], function(err, res) {
         if (err) {
             result(true, err);
         } else {
