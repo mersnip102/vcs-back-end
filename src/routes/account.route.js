@@ -5,6 +5,9 @@ var { prepareResponse } = require('../common/response');
 const {validateEmptyBaoCao} = require('../middleware/joiMiddleware');
 const {
     getAllAccount,
+    getAccountById,
+    createAccount,
+    deleteAccount
     // createNewNhomNguoiDung,
     // updateNhomNguoiDung,
     // deleteNhomNguoiDung,
@@ -14,23 +17,23 @@ const Account = require("../models/phan_quyen.model");
 
 const accountRouter = express.Router();
 
-// accountRouter.post(
-//     "/createNewNhomNguoiDung",
-//     createNewNhomNguoiDung,
-// );
+accountRouter.post(
+    "/createAccount",
+    createAccount,
+);
 
 // baoCaoHinhAnhRouter.post(
 //     "/updateBaoCaoHinhAnh",
 //     updateBaoCaoHinhAnh,
 // );
 
-// accountRouter.delete(
-//     "/deleteNhomNguoiDung/:id",
-//     deleteNhomNguoiDung,
-// );
+accountRouter.delete(
+    "/deleteAccount/:id",
+    deleteAccount,
+);
 
 accountRouter.get("/getAllAccount", getAllAccount);
-// accountRouter.get("/getBaoCaoHinhAnhById/:id", getBaoCaoHinhAnhById);
+accountRouter.get("/getAccountById/:id", getAccountById);
 
 // accountRouter.put("/updateNhomNguoiDung/:id", updateNhomNguoiDung);
 
