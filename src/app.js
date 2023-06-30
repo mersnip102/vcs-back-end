@@ -45,7 +45,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { authRouter, studentRouter, admissionsRouter,
-    eventsRouter, managerRouter, accountantRouter, dashboardRouter, baoCaoHinhAnhRouter } = require('./routes/index');
+    eventsRouter, managerRouter, accountantRouter, dashboardRouter, baoCaoHinhAnhRouter,
+    nhomNguoiDungRouter, accountRouter } = require('./routes/index');
 
 //Allow origin
 // Đính kèm middleware xử lý CORS
@@ -190,7 +191,7 @@ app.get('/image', (req, res) => {
 
 const db = require("./DB/connect.js");
 const Student = require('./models/student.model');
-const Account = require('./models/account.model');
+const Account = require('./models/phan_quyen.model');
 const { prepareResponse } = require('./common/response');
 const moment = require('moment');
 
@@ -448,6 +449,8 @@ app.use(managerRouter)
 app.use(accountantRouter)
 app.use(dashboardRouter)
 app.use(baoCaoHinhAnhRouter)
+app.use(nhomNguoiDungRouter)
+app.use(accountRouter)
 
 app.all('*', function(req, res) {
     return prepareResponse(res, 404, 'Page not found', null);

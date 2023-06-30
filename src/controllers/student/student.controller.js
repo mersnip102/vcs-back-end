@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }))
 
 var Student = require('../../models/student.model');
 var Scholarship = require('../../models/scholarship.model');
-var Account = require('../../models/account.model');
+var Account = require('../../models/phan_quyen.model');
 var Payment = require('../../models/payment.model');
 var upload = require('../upload/student.upload.controller');
 

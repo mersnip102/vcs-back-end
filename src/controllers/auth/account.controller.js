@@ -11,47 +11,24 @@ const {
     v4: uuidv4,
 } = require('uuid');
 
-var Account = require("../../models/phan_quyen.model");
-var ImageReport = require("../../models/bao_cao_hinh_anh.model");
+var PhanQuyen = require("../../models/phan_quyen.model");
 const e = require('express');
 
 
-const getAllBaoCaoHinhAnh = async(req, res) => {
-    const query = req.query
-    ImageReport.getAll(query, async function(err, result) {
+const getAllAccount = async(req, res) => {
+   
+    PhanQuyen.getAll(async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Failed", result)
            
         } else {
             console.log(result);
             for(let i = 0; i < result.length; i++){
-                // const wkbString = result[i].geo
-                // const buffer = Buffer.from(wkbString, 'hex');
-                // const geometry = wkx.Geometry.parse(buffer);
-                // const point = geometry.toGeoJSON().coordinates;
-                // console.log(point);
-                // result[i].geo = point;
-                if(result[i].geo != null && result[i].geo != undefined && result[i].geo != ''){
-                    const buffer = Buffer.from(result[i].geo, 'hex');
-                    const geometry = wkx.Geometry.parse(buffer);
-                    const geojson = geometry.toGeoJSON();
-                    console.log(geojson.coordinates);
-                    result[i].geo = geojson.coordinates;
-
-
-                }
-
-//                 const buffer = Buffer.from(result[i].geo, 'hex');
-// const geometry = wkx.Geometry.parse(buffer);
-// const geojson = geometry.toGeoJSON();
-// console.log(geojson);
 
                 if(result[i].status == 1){
-                    result[i].status = "Đã duyệt"
+                    result[i].status = "Hoạt động"
                 }else if(result[i].status == 0){
-                    result[i].status = "Không duyệt"
-                }else if(result[i].status == 2) {
-                    result[i].status = "Chờ duyệt"
+                    result[i].status = "Không hoạt động"
                 }
 
                 
@@ -67,7 +44,7 @@ const getAllBaoCaoHinhAnh = async(req, res) => {
 const createNewBaoCaoHinhAnh = async(req, res) => {
     var data = req.body;
     console.log(data);
-    ImageReport.create(data, async function(err, result) {
+    PhanQuyen.create(data, async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Failed", result)
             
@@ -83,7 +60,7 @@ const updateStatusBaoCaoHinhAnh = async(req, res) => {
     // let id = req.body.id;
     console.log(req.body);
     
-    ImageReport.updateStatus(data, async function(err, result) {
+    PhanQuyen.updateStatus(data, async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Chỉnh sửa báo cáo hình ảnh thất bại", result)
             
@@ -97,7 +74,7 @@ const updateStatusBaoCaoHinhAnh = async(req, res) => {
 const deleteBaoCaoHinhAnh = async(req, res) => {
     var data = req.params;
     console.log(data);
-    ImageReport.delete(data.id, async function(err, result) {
+    PhanQuyen.delete(data.id, async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Xóa báo cáo hình ảnh thất bại", result)
             
@@ -111,7 +88,7 @@ const deleteBaoCaoHinhAnh = async(req, res) => {
 const getBaoCaoHinhAnhById = async(req, res) => {
     var data = req.params;
     console.log(data);
-    ImageReport.getById(data.id, async function(err, result) {
+    PhanQuyen.getById(data.id, async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Lấy thông tin thất bại", result)
         } else {
@@ -159,7 +136,7 @@ const getBaoCaoHinhAnhById = async(req, res) => {
 
 
 module.exports = {
-    getAllBaoCaoHinhAnh,
+    getAllAccount,
     createNewBaoCaoHinhAnh,
     updateStatusBaoCaoHinhAnh,
     deleteBaoCaoHinhAnh,

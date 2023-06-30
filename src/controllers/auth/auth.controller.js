@@ -16,7 +16,7 @@ app.use(express.static("assets"));
 const Joi = require("joi");
 
 // var Account = require('../../models/account.model.js').default;
-var Account = require("../../models/account.model");
+var Account = require("../../models/account.model")
 var token = require("../../jwt/tokenUtils");
 
 var { prepareResponse } = require("../../common/response");

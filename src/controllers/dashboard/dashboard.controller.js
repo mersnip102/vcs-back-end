@@ -9,7 +9,7 @@ const {
     v4: uuidv4,
 } = require('uuid');
 
-var Account = require("../../models/account.model");
+var Account = require("../../models/phan_quyen.model");
 var Student = require("../../models/student.model");
 var Event = require("../../models/event.model");
 var LogChange = require("../../models/logChange.model");
