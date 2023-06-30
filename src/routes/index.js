@@ -8,6 +8,7 @@ const {dashboardRouter} = require('./dashboard.route');
 const {baoCaoHinhAnhRouter} = require('./bao_cao_hinh_anh.route');
 const {nhomNguoiDungRouter} = require('./nhom_nguoi_dung.route');
 const {accountRouter} = require('./account.route');
+const {toChucRouter} = require('./to_chuc.route')
 module.exports = {
     authRouter,
     studentRouter,
@@ -18,7 +19,8 @@ module.exports = {
     dashboardRouter,
     baoCaoHinhAnhRouter,
     nhomNguoiDungRouter,
-    accountRouter
+    accountRouter,
+    toChucRouter
     
 
 };

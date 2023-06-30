@@ -99,8 +99,8 @@ Account.createAccount = async function(data, result) {
 
 }
 
-Account.getAccountById = async function(ID, result) {
-    await connection.query("SELECT * FROM account WHERE ID = ?", ID, function(err, res) {
+Account.getAccountById = async function(id, result) {
+    await connection.query("SELECT * FROM account WHERE id = ?", id, function(err, res) {
         if (err) {
 
             result(false, err);

@@ -13,6 +13,7 @@ const {
 
 var PhanQuyen = require("../../models/phan_quyen.model");
 const e = require('express');
+const Account = require('../../models/account.model');
 
 
 const getAllAccount = async(req, res) => {
@@ -31,6 +32,8 @@ const getAllAccount = async(req, res) => {
                     result[i].status = "Không hoạt động"
                 }
 
+                delete result[i].password
+
                 
             }
             console.log(result);
@@ -41,18 +44,18 @@ const getAllAccount = async(req, res) => {
 }
 
 
-const createNewBaoCaoHinhAnh = async(req, res) => {
+const createAccount = async(req, res) => {
     var data = req.body;
     console.log(data);
-    PhanQuyen.create(data, async function(err, result) {
-        if (err) {
-            return prepareResponse(res, 400, "Failed", result)
+    // PhanQuyen.createAccount(data, async function(err, result) {
+    //     if (err) {
+    //         return prepareResponse(res, 400, "Tạo tài khoản thất bại", result)
             
-        } else {
-            return prepareResponse(res, 200, "Create bao_cao_hinh_anh success", { bao_cao_hinh_anh: result })
+    //     } else {
+    //         return prepareResponse(res, 200, "Tạo tài khoản thành công", { data: result })
             
-        }
-    });
+    //     }
+    // });
 }
 
 const updateStatusBaoCaoHinhAnh = async(req, res) => {
@@ -71,48 +74,34 @@ const updateStatusBaoCaoHinhAnh = async(req, res) => {
     });
 }
 
-const deleteBaoCaoHinhAnh = async(req, res) => {
-    var data = req.params;
+const deleteAccount = async(req, res) => {
+    var id = req.params;
     console.log(data);
-    PhanQuyen.delete(data.id, async function(err, result) {
+    PhanQuyen.deleteAccount(id, async function(err, result) {
         if (err) {
-            return prepareResponse(res, 400, "Xóa báo cáo hình ảnh thất bại", result)
+            return prepareResponse(res, 400, "Xóa tài khoản thất bại", result)
             
         } else {
-            return prepareResponse(res, 200, "Xóa báo cáo hình ảnh thành công", { bao_cao_hinh_anh: result })
+            return prepareResponse(res, 200, "Xóa tài khoản thành công", { data: result })
             
         }
+        
     });
 }
 
-const getBaoCaoHinhAnhById = async(req, res) => {
-    var data = req.params;
-    console.log(data);
-    PhanQuyen.getById(data.id, async function(err, result) {
+const getAccountById = async(req, res) => {
+    var id = req.params;
+    
+    PhanQuyen.getById(id, async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Lấy thông tin thất bại", result)
         } else {
            
-            if(result[0].geo && result[0].geo != null && result[0].geo != undefined && result[0].geo != ''){
-                const buffer = Buffer.from(result[0].geo, 'hex');
-                const geometry = wkx.Geometry.parse(buffer);
-                const geojson = geometry.toGeoJSON();
-                
-                result[0].geo = {}
-                result[0].geo.lat =  geojson.coordinates[0]
-                result[0].geo.lng =  geojson.coordinates[1]
-                
+            
 
-                
-            }
-
-            if(result[0].status == 1){
-                result[0].status = "Đã duyệt"
-            }else if(result[0].status == 0){
-                result[0].status = "Không duyệt"
-            }else if(result[0].status == 2) {
-                result[0].status = "Chờ duyệt"
-            }
+           
+             delete   result[0].password
+           
             
 
             return prepareResponse(res, 200, "Lấy thông tin thành công", { data: result })
@@ -137,9 +126,9 @@ const getBaoCaoHinhAnhById = async(req, res) => {
 
 module.exports = {
     getAllAccount,
-    createNewBaoCaoHinhAnh,
+    createAccount,
     updateStatusBaoCaoHinhAnh,
-    deleteBaoCaoHinhAnh,
-    getBaoCaoHinhAnhById
+    deleteAccount,
+    getAccountById
 
 }

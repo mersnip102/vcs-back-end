@@ -20,9 +20,9 @@ const PhanQuyen = function(account) {
 
 };
 
-PhanQuyen.create = async function(newGroup, result) {
+PhanQuyen.createAccount = async function(newAccount, result) {
     
-    await db.query("INSERT INTO account (ten, username, email, phone, chuc_danh, dia_chi, role, ho, password, ngay_tao, cap_tren, to_chuc, status, ngay_het_han) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, $13)", [newGroup.ten, newGroup.username, newGroup.email, newGroup.phone, newGroup.chuc_danh, newGroup.dia_chi, newGroup.role, newGroup.ho, newGroup.password, newGroup.cap_tren, newGroup.to_chuc, newGroup.status, newGroup.ngay_het_han], function(err, res) {
+    await db.query("INSERT INTO account (ten, username, email, phone, chuc_danh, dia_chi, role, ho, password, ngay_tao, cap_tren, to_chuc, status, ngay_het_han) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, $13)", [newAccount.ten, newAccount.username, newAccount.email, newAccount.phone, newAccount.chuc_danh, newAccount.dia_chi, newAccount.role, newAccount.ho, newAccount.password, newAccount.cap_tren, newAccount.to_chuc, newAccount.status, newAccount.ngay_het_han], function(err, res) {
         if (err) {
             
             result(true, err.message);
@@ -81,8 +81,8 @@ PhanQuyen.updateStatus = async function(statusData, result) {
     });
 };
 
-PhanQuyen.delete = async function(id, result) {
-    await db.query("DELETE FROM nhom_nguoi_dung WHERE id = $1", [id], function(err, res) {
+PhanQuyen.deleteAccount = async function(id, result) {
+    await db.query("DELETE FROM account WHERE id = $1", [id], function(err, res) {
         if (err) {
             console.log(err);
             result(true, err);

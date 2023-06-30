@@ -46,7 +46,7 @@ dotenv.config();
 
 const { authRouter, studentRouter, admissionsRouter,
     eventsRouter, managerRouter, accountantRouter, dashboardRouter, baoCaoHinhAnhRouter,
-    nhomNguoiDungRouter, accountRouter } = require('./routes/index');
+    nhomNguoiDungRouter, accountRouter, toChucRouter } = require('./routes/index');
 
 //Allow origin
 // Đính kèm middleware xử lý CORS
@@ -451,6 +451,7 @@ app.use(dashboardRouter)
 app.use(baoCaoHinhAnhRouter)
 app.use(nhomNguoiDungRouter)
 app.use(accountRouter)
+app.use(toChucRouter)
 
 app.all('*', function(req, res) {
     return prepareResponse(res, 404, 'Page not found', null);
