@@ -7,7 +7,8 @@ const {
     getAllAccount,
     getAccountById,
     createAccount,
-    deleteAccount
+    deleteAccount,
+    updateAccount
     // createNewNhomNguoiDung,
     // updateNhomNguoiDung,
     // deleteNhomNguoiDung,
@@ -35,7 +36,7 @@ accountRouter.delete(
 accountRouter.get("/getAllAccount", getAllAccount);
 accountRouter.get("/getAccountById/:id", getAccountById);
 
-// accountRouter.put("/updateNhomNguoiDung/:id", updateNhomNguoiDung);
+accountRouter.put("/updateAccount/:id", updateAccount);
 
 const storage = multer.diskStorage({
 

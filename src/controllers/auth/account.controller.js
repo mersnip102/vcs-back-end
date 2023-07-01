@@ -26,9 +26,9 @@ const getAllAccount = async(req, res) => {
             console.log(result);
             for(let i = 0; i < result.length; i++){
 
-                if(result[i].status == 1){
+                if(result[i].status == true){
                     result[i].status = "Hoạt động"
-                }else if(result[i].status == 0){
+                }else if(result[i].status == false){
                     result[i].status = "Không hoạt động"
                 }
 
@@ -47,23 +47,23 @@ const getAllAccount = async(req, res) => {
 const createAccount = async(req, res) => {
     var data = req.body;
     console.log(data);
-    // PhanQuyen.createAccount(data, async function(err, result) {
-    //     if (err) {
-    //         return prepareResponse(res, 400, "Tạo tài khoản thất bại", result)
+    PhanQuyen.createAccount(data, async function(err, result) {
+        if (err) {
+            return prepareResponse(res, 400, "Tạo tài khoản thất bại", result)
             
-    //     } else {
-    //         return prepareResponse(res, 200, "Tạo tài khoản thành công", { data: result })
+        } else {
+            return prepareResponse(res, 200, "Tạo tài khoản thành công", { data: result })
             
-    //     }
-    // });
+        }
+    });
 }
 
-const updateStatusBaoCaoHinhAnh = async(req, res) => {
-    let data = req.body;
-    // let id = req.body.id;
-    console.log(req.body);
+const updateAccount = async(req, res) => {
+    const data = req.body;
+    const id = req.params.id;
+    console.log(data)
     
-    PhanQuyen.updateStatus(data, async function(err, result) {
+    PhanQuyen.updateAccount(id, data, async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Chỉnh sửa báo cáo hình ảnh thất bại", result)
             
@@ -75,8 +75,8 @@ const updateStatusBaoCaoHinhAnh = async(req, res) => {
 }
 
 const deleteAccount = async(req, res) => {
-    var id = req.params;
-    console.log(data);
+    var id = req.params.id;
+    
     PhanQuyen.deleteAccount(id, async function(err, result) {
         if (err) {
             return prepareResponse(res, 400, "Xóa tài khoản thất bại", result)
@@ -127,7 +127,7 @@ const getAccountById = async(req, res) => {
 module.exports = {
     getAllAccount,
     createAccount,
-    updateStatusBaoCaoHinhAnh,
+    updateAccount,
     deleteAccount,
     getAccountById
 

@@ -29,7 +29,7 @@ toChucRouter.delete(
     deleteNhomNguoiDung,
 );
 
-toChucRouter.get("/getAllToCHuc", getAllToChuc);
+toChucRouter.get("/getAllToChuc", getAllToChuc);
 toChucRouter.get("/getBaoCaoHinhAnhById/:id", getBaoCaoHinhAnhById);
 
 toChucRouter.put("/updateNhomNguoiDung/:id", updateNhomNguoiDung);

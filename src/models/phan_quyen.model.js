@@ -22,11 +22,12 @@ const PhanQuyen = function(account) {
 
 PhanQuyen.createAccount = async function(newAccount, result) {
     
-    await db.query("INSERT INTO account (ten, username, email, phone, chuc_danh, dia_chi, role, ho, password, ngay_tao, cap_tren, to_chuc, status, ngay_het_han) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, $13)", [newAccount.ten, newAccount.username, newAccount.email, newAccount.phone, newAccount.chuc_danh, newAccount.dia_chi, newAccount.role, newAccount.ho, newAccount.password, newAccount.cap_tren, newAccount.to_chuc, newAccount.status, newAccount.ngay_het_han], function(err, res) {
+    await db.query("INSERT INTO account (ten, username, email, phone, chuc_danh, dia_chi, role, ho, password, ngay_tao, to_chuc, ngay_het_han, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12)", [newAccount.ten, newAccount.username, newAccount.email, newAccount.phone, newAccount.chuc_danh, newAccount.dia_chi, newAccount.role, newAccount.ho, newAccount.password, newAccount.to_chuc, newAccount.ngay_het_han, newAccount.status], function(err, res) {
         if (err) {
-            
+            console.log(err)
             result(true, err.message);
         } else {
+           
             result(false, res.insertId);
         }
     }
@@ -36,7 +37,7 @@ PhanQuyen.createAccount = async function(newAccount, result) {
 PhanQuyen.getAll = async function(result) {
     
    
-    const sql = "SELECT account.*, nhom_nguoi_dung.ten_nhom, to_chuc.ten_to_chuc FROM account LEFT JOIN nhom_nguoi_dung ON account.role = nhom_nguoi_dung.id JOIN to_chuc ON account.to_chuc = to_chuc.id;" 
+    const sql = "SELECT account.*, nhom_nguoi_dung.ten_nhom, to_chuc.ten_to_chuc FROM account JOIN nhom_nguoi_dung ON account.role = nhom_nguoi_dung.id JOIN to_chuc ON account.to_chuc = to_chuc.id" 
     
    
 
@@ -61,11 +62,13 @@ PhanQuyen.getById = async function(id, result) {
     });
 };
 
-PhanQuyen.updateById = async function(id, newGroupUser, result) {
-    await db.query("UPDATE nhom_nguoi_dung SET ten_nhom = $1, mo_ta = $2  WHERE id = $3", [newGroupUser.ten_nhom, newGroupUser.mo_ta, id], function(err, res) {
+PhanQuyen.updateAccount = async function(id, dataUpdateAccount, result) {
+    await db.query("UPDATE account SET ten = $1, username = $2, email = $3, phone = $4, chuc_danh = $5, dia_chi = $6, role = $7, ho = $8, password = $9, ngay_tao = $10, to_chuc = $11, ngay_het_han = $12, status = $13 WHERE id = $14", [dataUpdateAccount.ten, dataUpdateAccount.username, dataUpdateAccount.email, dataUpdateAccount.phone, dataUpdateAccount.chuc_danh, dataUpdateAccount.dia_chi, dataUpdateAccount.role, dataUpdateAccount.ho, dataUpdateAccount.password, new Date(),dataUpdateAccount.to_chuc, dataUpdateAccount.ngay_het_han, dataUpdateAccount.status, id], function(err, res) {
         if (err) {
+            console.log(err)
             result(true, err);
         } else {
+            
             result(false, res);
         }
     });
