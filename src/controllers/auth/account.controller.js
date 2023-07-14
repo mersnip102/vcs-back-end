@@ -65,10 +65,10 @@ const updateAccount = async(req, res) => {
     
     PhanQuyen.updateAccount(id, data, async function(err, result) {
         if (err) {
-            return prepareResponse(res, 400, "Chỉnh sửa báo cáo hình ảnh thất bại", result)
+            return prepareResponse(res, 400, "Chỉnh sửa tài khoản thất bại", result)
             
         } else {
-            return prepareResponse(res, 200, "Chỉnh sửa báo cáo hình ảnh thành công", { data: result })
+            return prepareResponse(res, 200, "Chỉnh sửa tài khoản thành công", { data: result })
             
         }
     });
